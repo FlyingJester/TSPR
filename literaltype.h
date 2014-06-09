@@ -6,8 +6,11 @@
 	#ifdef _WIN32
 		#define DOUBLE_LITERAL(x) x
 		#define FLOAT_LITERAL(x) x##f
-	#else
+	#elif !defined(__clang__)
 		#define DOUBLE_LITERAL(x) x##d
+		#define FLOAT_LITERAL(x) x##f
+	#else
+		#define DOUBLE_LITERAL(x) x
 		#define FLOAT_LITERAL(x) x##f
 	#endif
 
