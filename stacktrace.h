@@ -64,13 +64,15 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 #define TS_STACKTRACE_HEAD
 #ifdef __GNUC__
 #include <execinfo.h>
+#include <cxxabi.h>
+#include <cstring>
 #define TS_Stack_PreviousFunctionName(_name){\
     void **address = (void **)malloc(sizeof(void *)*2);\
-    int err = backtrace(address, 2);\
-    if(err<=1)\
+    if(backtrace(address, 2)<=1)\
         _name = NULL;\
     else{\
-        _name = address[1];\
+        char **names = backtrace_symbols(address, 2);\
+        _name=names[0];\
     }\
 }
 
