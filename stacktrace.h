@@ -68,9 +68,9 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
     void **address = (void **)malloc(sizeof(void *)*2);\
     int err = backtrace(address, 2);\
     if(err<=1)\
-        _name = NULL;\
+        _name = (const char *)NULL;\
     else{\
-        _name = address[1];\
+        _name = (const char *)(address[1]);\
     }\
 }
 

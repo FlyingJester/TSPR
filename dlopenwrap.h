@@ -11,6 +11,13 @@ typedef void* fhandle;
 
 #ifdef _WIN32
 #include <windows.h>
+
+#define DLOPENFUNCTION(_handle, _symbol)\
+  GetProcess(_handle, _symbol)
+
+
+// Deprecated version
+
 #define DLOPENFUNCTION(_type, _dlfunc, _handle, _name, _errormsg, _error, action)\
     _dlfunc = (_type)GetProcAddress(_handle, _name);\
     if ((_dlfunc) == NULL)  {\
@@ -23,7 +30,12 @@ typedef void* fhandle;
 #include <stdlib.h>
 #include <dlfcn.h>
 
-#define DLOPENFUNCTION(_type, _dlfunc, _handle, _name, _errormsg, _error, action)\
+#define DLOPENFUNCTION(_handle, _symbol)\
+  dlsym(_handle, _symbol)
+
+// Deprecated version
+
+#define DLOPENFUNCTION_OLD(_type, _dlfunc, _handle, _name, _errormsg, _error, action)\
     _dlfunc = (_type)dlsym(_handle, _name);\
     if ((_error = dlerror()) != NULL)  {\
         fprintf (stderr, "%s\n", error);\
