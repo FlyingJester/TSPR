@@ -4,3 +4,4 @@
 		#define DOUBLE_LITERAL(x) x
 		#define FLOAT_LITERAL(x) x##f
 
+#endif
