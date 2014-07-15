@@ -5,43 +5,38 @@
 #ifdef _WIN32
 #include <windows.h>
 typedef HINSTANCE fhandle;
+
+#define DL_LAZY   0
+#define DL_NOW    1
+#define DL_LOCAL  2
+#define DL_GLOBAL 3
+
+#define DLOPENLIBRARY(_name, _directory, _flags) LoadLibrary( _directory "/" _name ".dll")
+
+#define DLOPENSYSLIBRARY(_name, _flags) LoadLibrary(_name)
+
+#define DLCLOSELIBRARY CloseLibrary
+
+#define DLOPENFUNCTION GetProcAddress
+
 #else
 typedef void* fhandle;
-#endif
-
-#ifdef _WIN32
-#include <windows.h>
-
-#define DLOPENFUNCTION(_handle, _symbol)\
-  GetProcess(_handle, _symbol)
-
-
-// Deprecated version
-
-#define DLOPENFUNCTION(_type, _dlfunc, _handle, _name, _errormsg, _error, action)\
-    _dlfunc = (_type)GetProcAddress(_handle, _name);\
-    if ((_dlfunc) == NULL)  {\
-        printf("Error loading library : No function \"%s\".\n", _name);\
-        action;\
-    }
-
-#else
 
 #include <stdlib.h>
 #include <dlfcn.h>
 
-#define DLOPENFUNCTION(_handle, _symbol)\
-  dlsym(_handle, _symbol)
+#define DL_LAZY     RTLD_LAZY
+#define DL_NOW      RTLD_NOW
+#define DL_LOCAL    RTLD_LOCAL
+#define DL_GLOBAL   RTLD_GLOBAL
 
-// Deprecated version
+#define DLOPENLIBRARY(_name, _directory, _flags) dlopen( _directory "/lib" _name ".so", _flags)
 
-#define DLOPENFUNCTION_OLD(_type, _dlfunc, _handle, _name, _errormsg, _error, action)\
-    _dlfunc = (_type)dlsym(_handle, _name);\
-    if ((_error = dlerror()) != NULL)  {\
-        fprintf (stderr, "%s\n", error);\
-        printf(_errormsg, _name);\
-        action;\
-    }
+#define DLOPENSYSLIBRARY(_name, _flags) dlopen(_name, _flags)
+
+#define DLCLOSELIBRARY dlclose
+
+#define DLOPENFUNCTION dlsym
 
 #endif
 
