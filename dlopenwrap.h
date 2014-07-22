@@ -32,7 +32,13 @@ typedef void* fhandle;
 
 #define DLOPENLIBRARY(_name, _directory, _flags) dlopen( _directory "/lib" _name ".so", _flags)
 
-#define DLOPENSYSLIBRARY(_name, _flags) dlopen(_name, _flags)
+#ifdef OS_X
+#define DEFAULT_SUFFIX "dylib"
+#else
+#define DEFAULT_SUFFIX "so"
+#endif
+
+#define DLOPENSYSLIBRARY(_name, _flags) dlopen( "lib" _name "." DEFAULT_SUFFIX, _flags)
 
 #define DLCLOSELIBRARY dlclose
 
