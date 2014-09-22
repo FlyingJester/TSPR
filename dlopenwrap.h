@@ -13,11 +13,11 @@ typedef HINSTANCE fhandle;
 
 #define DLOPENLIBRARY(_name, _directory, _flags) LoadLibrary( _directory "/" _name ".dll")
 
-#define DLOPENSYSLIBRARY(_name, _flags) LoadLibrary(_name)
+#define DLOPENSYSLIBRARY(_name, _flags) LoadLibrary(_name ".dll")
 
-#define DLCLOSELIBRARY CloseLibrary
+#define DLCLOSELIBRARY(_a) FreeLibrary((HMODULE)_a)
 
-#define DLOPENFUNCTION GetProcAddress
+#define DLOPENFUNCTION(_a, _b) GetProcAddress((HMODULE)_a, _b)
 
 #else
 typedef void* fhandle;
@@ -30,13 +30,13 @@ typedef void* fhandle;
 #define DL_LOCAL    RTLD_LOCAL
 #define DL_GLOBAL   RTLD_GLOBAL
 
-#define DLOPENLIBRARY(_name, _directory, _flags) dlopen( _directory "/lib" _name ".so", _flags)
-
 #ifdef OS_X
 #define DEFAULT_SUFFIX "dylib"
 #else
 #define DEFAULT_SUFFIX "so"
 #endif
+
+#define DLOPENLIBRARY(_name, _directory, _flags) dlopen( _directory "/lib" _name DEFAULT_SUFFIX, _flags)
 
 #define DLOPENSYSLIBRARY(_name, _flags) dlopen( "lib" _name "." DEFAULT_SUFFIX, _flags)
 
