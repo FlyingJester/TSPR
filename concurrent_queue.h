@@ -1,5 +1,5 @@
 #pragma once
-#ifdef _MSC_VER && (!defined(USE_INTEL_TBB)) && (!defined(USE_MUTEX_QUEUE)) && (!defined(USE_PIPE_CONCURRENT_QUEUE))
+#if (defined _MSC_VER) && (!defined(USE_INTEL_TBB)) && (!defined(USE_MUTEX_QUEUE)) && (!defined(USE_PIPE_CONCURRENT_QUEUE))
 
     #include <concurrent_queue.h>
     using concurrency::concurrent_queue;
