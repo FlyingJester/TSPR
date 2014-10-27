@@ -1,5 +1,5 @@
 #pragma once
-#ifdef _MSC_VER
+#ifdef _MSC_VER && (!defined(USE_INTEL_TBB)) && (!defined(USE_MUTEX_QUEUE)) && (!defined(USE_PIPE_CONCURRENT_QUEUE))
 
     #include <concurrent_queue.h>
     using concurrency::concurrent_queue;
@@ -82,9 +82,9 @@
 
         #endif
 
-        #ifdef USE_PTHREAD
+        #ifdef USE_MUTEX
             #include <mutex>
-        #elif defined(USE_MUTEX)
+        #elif defined(USE_PTHREAD)
             #include <pthread.h>
         #endif
 
@@ -94,34 +94,34 @@
             std::queue<T> aQueue;
 
 
-            #ifdef USE_PTHREAD
+            #ifdef USE_MUTEX
                 typedef std::mutex mutex;
-            #elif defined(USE_MUTEX)
+            #elif defined(USE_PTHREAD)
                 typedef pthread_mutex_t mutex;
             #endif
 
             mutable mutex aMutex;
 
             inline void lock(void) const{
-                #ifdef USE_PTHREAD
+                #ifdef USE_MUTEX
                     aMutex.lock();
-                #elif defined(USE_MUTEX)
+                #elif defined(USE_PTHREAD)
                     pthread_mutex_lock(&aMutex);
                 #endif
             }
 
             inline bool trylock(void) const{
-                #ifdef USE_PTHREAD
+                #ifdef USE_MUTEX
                     return aMutex.try_lock();
-                #elif defined(USE_MUTEX)
+                #elif defined(USE_PTHREAD)
                     return (pthread_mutex_trylock(&aMutex)==0);
                 #endif
             }
 
             inline void unlock(void) const{
-                #ifdef USE_PTHREAD
+                #ifdef USE_MUTEX
                     aMutex.unlock();
-                #elif defined(USE_MUTEX)
+                #elif defined(USE_PTHREAD)
                     pthread_mutex_unlock(&aMutex);
                 #endif
             }
