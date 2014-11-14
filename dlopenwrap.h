@@ -28,9 +28,9 @@ typedef HINSTANCE fhandle;
 #define DL_LOCAL  2
 #define DL_GLOBAL 3
 
-#define DLOPENLIBRARY(_name, _directory, _flags) LoadLibrary( _directory "/" LIBRARY_PREFIX _name LIBRARY_SUFFIX)
+#define DLOPENLIBRARY(_name, _directory, _flags) LoadLibrary( _directory "/" LIBRARY_PREFIX _name  "."  LIBRARY_SUFFIX)
 
-#define DLOPENSYSLIBRARY(_name, _flags) LoadLibrary(_name ".dll")
+#define DLOPENSYSLIBRARY(_name, _flags) LoadLibrary(LIBRARY_PREFIX _name "." LIBRARY_SUFFIX)
 
 #define DLCLOSELIBRARY(_a) FreeLibrary((HMODULE)_a)
 
@@ -47,7 +47,7 @@ typedef void* fhandle;
 #define DL_LOCAL    RTLD_LOCAL
 #define DL_GLOBAL   RTLD_GLOBAL
 
-#define DLOPENLIBRARY(_name, _directory, _flags) dlopen( _directory "/" LIBRARY_PREFIX _name LIBRARY_SUFFIX, _flags)
+#define DLOPENLIBRARY(_name, _directory, _flags) dlopen( _directory "/" LIBRARY_PREFIX _name  "."  LIBRARY_SUFFIX, _flags)
 
 #define DLOPENSYSLIBRARY(_name, _flags) dlopen( LIBRARY_PREFIX _name "." LIBRARY_SUFFIX, _flags)
 
