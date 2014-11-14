@@ -59,6 +59,27 @@
                     return rAt;
                 }
 
+                inline void clear(){
+                    struct flock fl;
+
+                    fl.l_type = F_WRLCK;
+                    fl.l_whence = SEEK_SET;
+                    fl.l_start = 0;
+                    fl.l_len = 0;
+                    fl.l_pid = getpid();
+
+                    fcntl(FD[1], F_SETLKW, &fl);
+                    fl.l_type = F_RDLCK;
+
+                    T a;
+                    while(try_pop(a));
+
+                    fl.l_type = F_UNLCK;
+                    fcntl(FD[1], F_SETLKW, &fl);
+                    fcntl(FD[0], F_SETLKW, &fl);
+
+                }
+
             };
     #else
 
@@ -188,6 +209,11 @@
 
             }
 
+            inline void clear(){
+                lock();
+                aQueue.clear();
+                unlock();
+            }
         };
 
 

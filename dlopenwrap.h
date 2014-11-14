@@ -1,6 +1,23 @@
 #ifndef TS_COMMON_DLOPENWRAP
 #define TS_COMMON_DLOPENWRAP
 
+#ifdef _WIN32
+
+#define LIBRARY_PREFIX
+#define LIBRARY_SUFFIX "dll"
+
+#elif defined __APPLE__
+
+#define LIBRARY_PREFIX "lib"
+#define LIBRARY_SUFFIX "dylib"
+
+#else
+
+#define LIBRARY_PREFIX "lib"
+#define LIBRARY_SUFFIX "so"
+
+#endif
+
 
 #ifdef _WIN32
 #include <windows.h>
@@ -11,7 +28,7 @@ typedef HINSTANCE fhandle;
 #define DL_LOCAL  2
 #define DL_GLOBAL 3
 
-#define DLOPENLIBRARY(_name, _directory, _flags) LoadLibrary( _directory "/" _name ".dll")
+#define DLOPENLIBRARY(_name, _directory, _flags) LoadLibrary( _directory "/" LIBRARY_PREFIX _name LIBRARY_SUFFIX)
 
 #define DLOPENSYSLIBRARY(_name, _flags) LoadLibrary(_name ".dll")
 
@@ -30,15 +47,9 @@ typedef void* fhandle;
 #define DL_LOCAL    RTLD_LOCAL
 #define DL_GLOBAL   RTLD_GLOBAL
 
-#ifdef OS_X
-#define DEFAULT_SUFFIX "dylib"
-#else
-#define DEFAULT_SUFFIX "so"
-#endif
+#define DLOPENLIBRARY(_name, _directory, _flags) dlopen( _directory "/" LIBRARY_PREFIX _name LIBRARY_SUFFIX, _flags)
 
-#define DLOPENLIBRARY(_name, _directory, _flags) dlopen( _directory "/lib" _name DEFAULT_SUFFIX, _flags)
-
-#define DLOPENSYSLIBRARY(_name, _flags) dlopen( "lib" _name "." DEFAULT_SUFFIX, _flags)
+#define DLOPENSYSLIBRARY(_name, _flags) dlopen( LIBRARY_PREFIX _name "." LIBRARY_SUFFIX, _flags)
 
 #define DLCLOSELIBRARY dlclose
 
